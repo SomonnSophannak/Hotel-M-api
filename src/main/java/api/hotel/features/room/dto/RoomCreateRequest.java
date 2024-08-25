@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public record RoomCreateRequest(
 
         @NotBlank (message = "Room no is required")
-        String room,
+        String name,
 
         @NotBlank (message = "Status no is required")
         String status,

@@ -31,7 +31,7 @@ public class Hotel {
     private String phone;
 
     // Relationships
-    @OneToMany(mappedBy = "hotel")
-    private List<Room> rooms;
+    //@OneToMany(mappedBy = "hotel")
+    //private List<Room> rooms;
 
 }

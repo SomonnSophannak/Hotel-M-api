@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record RoomResponse(
 
-        String room,
+        String name,
         String status,
         //String hotel,
         String roomTypeRes

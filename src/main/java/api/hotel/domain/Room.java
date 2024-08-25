@@ -17,15 +17,15 @@ public class Room {
     private Integer id;
 
     @Column(nullable = false)
-    private String room;
+    private String name;
 
     @Column(nullable = false)
     private String status;
 
     // Relationships
-    @ManyToOne
-    @JoinColumn(name = "hotelID")
-    private Hotel hotel;
+    //@ManyToOne
+    //@JoinColumn(name = "hotelID")
+    //private Hotel hotel;
 
     @ManyToOne
     //@JoinColumn(name = "typeID")

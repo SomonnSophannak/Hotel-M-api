@@ -1,9 +1,8 @@
 package api.hotel.features.room;
 
-
-import api.hotel.domain.Room;
 import api.hotel.features.room.dto.RoomCreateRequest;
 import api.hotel.features.room.dto.RoomResponse;
+import api.hotel.features.room.dto.RoomUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,8 +24,29 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<Room> findList () {
+    public List<RoomResponse> findList () {
 
-        return null;
+        return roomService.findList();
+    }
+
+    @PatchMapping("/{name}")
+    RoomResponse updateByName(@PathVariable String name,
+                                  @RequestBody RoomUpdateRequest roomUpdateRequest) {
+
+        return roomService.updateByName(name, roomUpdateRequest);
+
+    }
+
+    @GetMapping("/{name}")
+    RoomResponse findByName(@PathVariable("name") String name) {
+
+        return roomService.findByName(name);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{name}")
+    void deleteByName(@PathVariable("name") String name) {
+
+        roomService.deleteByName(name);
     }
 }

@@ -1,18 +1,16 @@
 package api.hotel.features.room;
 
-import api.hotel.domain.Hotel;
 import api.hotel.domain.Room;
 import api.hotel.domain.RoomType;
-import api.hotel.features.Hotel.HotelRepository;
 import api.hotel.features.room.dto.RoomCreateRequest;
 import api.hotel.features.room.dto.RoomResponse;
+import api.hotel.features.room.dto.RoomUpdateRequest;
 import api.hotel.features.roomtype.RoomTypeRepository;
 import api.hotel.mapper.RoomMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 
 @Service
@@ -21,9 +19,8 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomTypeRepository roomTypeRepository;
-    //private final HotelRepository hotelRepository;
-
     private final RoomMapper roomMapper;
+
 
     @Override
     public RoomResponse createNew(RoomCreateRequest roomCreateRequest) {
@@ -45,7 +42,7 @@ public class RoomServiceImpl implements RoomService {
                 ));*/
 
         // Validate Room
-        if (roomRepository.existsByRoom(roomCreateRequest.room())){
+        if (roomRepository.existsByName(roomCreateRequest.name())){
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Room no has already been existed");
         }
@@ -76,12 +73,50 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomResponse> findList() {
-        return null;
+
+        List<Room> rooms = roomRepository.findAll();
+        return roomMapper.toRoomResponseList(rooms);
     }
 
     @Override
-    public RoomResponse findById(Integer id) {
-        return null;
+    public RoomResponse findByName(String name) {
+
+        // Validate room name
+        Room room = roomRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Room Name has not been found"));
+        return roomMapper.toRoomResponse(room);
     }
+
+    @Override
+    public void deleteByName(String name) {
+        // Validate room name
+        Room room = roomRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Room Name has not been found"));
+
+        roomRepository.delete(room);
+    }
+
+    @Override
+    public RoomResponse updateByName(String name, RoomUpdateRequest roomUpdateRequest) {
+
+        // Validate room name
+        Room room = roomRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Room Name has not been found"));
+
+        roomMapper.fromRoomUpdateRequest(roomUpdateRequest, room);
+
+        room = roomRepository.save(room);
+
+        return roomMapper.toRoomResponse(room);
+
+    }
+
+
 
 }

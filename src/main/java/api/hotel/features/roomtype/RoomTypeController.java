@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -19,15 +18,16 @@ public class RoomTypeController {
 
     @GetMapping("/{name}")
     RoomTypeResponse findByName(@PathVariable("name") String name) {
+
         return roomTypeService.findByName(name);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{name}")
     void deleteByName(@PathVariable("name") String name) {
+
         roomTypeService.deleteByName(name);
     }
-
 
     @PatchMapping("/{name}")
     RoomTypeResponse updateByName(@PathVariable String name,
@@ -40,11 +40,13 @@ public class RoomTypeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     void createNew(@Valid @RequestBody RoomTypeRequest roomTypeRequest) {
+
         roomTypeService.createNew(roomTypeRequest);
     }
 
     @GetMapping
     List<RoomTypeResponse> findList(){
+
         return roomTypeService.findList();
     }
 }
