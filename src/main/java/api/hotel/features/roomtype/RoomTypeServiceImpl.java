@@ -21,6 +21,29 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     private final RoomTypeMapper roomTypeMapper;
 
     @Override
+    public RoomTypeResponse findByName(String name) {
+
+        // Validate room name
+        RoomType roomType = roomTypeRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Room Name has not been found"));
+        return roomTypeMapper.toRoomTypeResponse(roomType);
+    }
+
+    @Override
+    public void deleteByName(String name) {
+
+        // Validate room name
+        RoomType roomType = roomTypeRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Room Name has not been found"));
+
+        roomTypeRepository.delete(roomType);
+    }
+
+    @Override
     public RoomTypeResponse updateByName(String name, RoomTypeUpdateRequest roomTypeUpdateRequest) {
 
         // Validate room name
@@ -50,11 +73,12 @@ public class RoomTypeServiceImpl implements RoomTypeService {
         roomTypeRepository.save(roomType);
 
     }
+
     @Override
     public List<RoomTypeResponse> findList() {
 
         List<RoomType> roomTypes = roomTypeRepository.findAll();
-
         return roomTypeMapper.toRoomTypeResponseList(roomTypes);
     }
+
 }

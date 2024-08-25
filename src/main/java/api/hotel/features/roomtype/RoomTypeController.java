@@ -1,6 +1,5 @@
 package api.hotel.features.roomtype;
 
-import api.hotel.features.room.dto.RoomResponse;
 import api.hotel.features.roomtype.dto.RoomTypeRequest;
 import api.hotel.features.roomtype.dto.RoomTypeResponse;
 import api.hotel.features.roomtype.dto.RoomTypeUpdateRequest;
@@ -18,12 +17,23 @@ public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
 
+    @GetMapping("/{name}")
+    RoomTypeResponse findByName(@PathVariable("name") String name) {
+        return roomTypeService.findByName(name);
+    }
 
-    @PatchMapping("/{id}")
-    RoomTypeResponse updateByName(@PathVariable String id,
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{name}")
+    void deleteByName(@PathVariable("name") String name) {
+        roomTypeService.deleteByName(name);
+    }
+
+
+    @PatchMapping("/{name}")
+    RoomTypeResponse updateByName(@PathVariable String name,
                                   @RequestBody RoomTypeUpdateRequest roomTypeUpdateRequest) {
 
-        return roomTypeService.updateByName(id, roomTypeUpdateRequest);
+        return roomTypeService.updateByName(name, roomTypeUpdateRequest);
 
     }
 
