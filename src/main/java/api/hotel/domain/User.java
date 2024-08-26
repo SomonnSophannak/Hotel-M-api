@@ -28,11 +28,16 @@ public class User {
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String phone;
 
     // Relationships
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
+
+    @ManyToMany
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private List<Role> roles;
 
 }

@@ -1,10 +1,12 @@
 package api.hotel.init;
 
 import api.hotel.domain.Hotel;
+import api.hotel.domain.Role;
 import api.hotel.domain.RoomType;
 import api.hotel.domain.User;
 import api.hotel.features.Hotel.HotelRepository;
 import api.hotel.features.roomtype.RoomTypeRepository;
+import api.hotel.features.user.RoleRepository;
 import api.hotel.features.user.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class DataInit {
     private final UserRepository userRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final HotelRepository hotelRepository;
+    private final RoleRepository roleRepository;
 
     @PostConstruct
     void init() {
@@ -63,19 +66,43 @@ public class DataInit {
 
         if (userRepository.count() == 0) {
 
-            User user = new User();
-            user.setFullName("Somonn Sophannak");
-            user.setDateOfBirth ("12-12-1997");
-            user.setAddress("Phom Penh");
-            user.setPhone("012345678");
+            Role user = new Role();
+            user.setName("USER");
+
+            Role customer = new Role();
+            customer.setName("CUSTOMER");
+
+            Role manager = new Role();
+            manager.setName("MANAGER");
+
+            Role admin = new Role();
+            admin.setName("ADMIN");
+            
+            roleRepository.saveAll(List.of(user, customer, manager, admin));
+
 
             User user1 = new User();
             user1.setFullName("Somonn Sophannak");
             user1.setDateOfBirth ("12-12-1997");
             user1.setAddress("Phom Penh");
-            user1.setPhone("012345678");
+            user1.setPhone("012111222");
+            user1.setRoles(List.of(user, admin));
 
-            userRepository.saveAll(List.of(user, user1));
+            User user2= new User();
+            user2.setFullName("Meng Leang");
+            user2.setDateOfBirth ("12-12-2000");
+            user2.setAddress("Phom Penh");
+            user2.setPhone("012333444");
+            user2.setRoles(List.of(user, manager));
+
+            User user3= new User();
+            user3.setFullName("Meng Sring");
+            user3.setDateOfBirth ("12-12-2000");
+            user3.setAddress("Phom Penh");
+            user3.setPhone("012555666");
+            user3.setRoles(List.of(user, customer));
+
+            userRepository.saveAll(List.of(user1, user2, user3));
         }
     }
 }

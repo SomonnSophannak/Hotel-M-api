@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
 
-    @Mapping(source = "roomType.name", target = "roomTypeRes")
+    //@Mapping(source = "roomType.name", target = "roomTypeRes")
     RoomResponse toRoomResponse(Room room);
 
     Room fromRoomCreateRequest(RoomCreateRequest roomCreateRequest);
