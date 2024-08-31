@@ -10,6 +10,7 @@ import api.hotel.features.user.RoleRepository;
 import api.hotel.features.user.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class DataInit {
     private final RoomTypeRepository roomTypeRepository;
     private final HotelRepository hotelRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     void init() {
@@ -62,7 +64,7 @@ public class DataInit {
         hotel1.setPhone("012222333");
 
         hotelRepository.saveAll(List.of(hotel, hotel1));
-    }
+        }
 
         if (userRepository.count() == 0) {
 
@@ -85,21 +87,27 @@ public class DataInit {
             user1.setFullName("Somonn Sophannak");
             user1.setDateOfBirth ("12-12-1997");
             user1.setAddress("Phom Penh");
-            user1.setPhone("012111222");
+            user1.setPassword(passwordEncoder.encode("123"));
+            user1.setPhoneNumber("012111222");
+            user1.setEmail("Sophannak@gmail.com");
             user1.setRoles(List.of(user, admin));
 
             User user2= new User();
             user2.setFullName("Meng Leang");
             user2.setDateOfBirth ("12-12-2000");
             user2.setAddress("Phom Penh");
-            user2.setPhone("012333444");
+            user2.setPassword(passwordEncoder.encode("123"));
+            user2.setPhoneNumber("012222333");
+            user2.setEmail("MengLeang@gmail.com");
             user2.setRoles(List.of(user, manager));
 
             User user3= new User();
             user3.setFullName("Meng Sring");
             user3.setDateOfBirth ("12-12-2000");
             user3.setAddress("Phom Penh");
-            user3.setPhone("012555666");
+            user3.setPassword(passwordEncoder.encode("123"));
+            user3.setPhoneNumber("012444555");
+            user3.setEmail("MengSring@gmail.com");
             user3.setRoles(List.of(user, customer));
 
             userRepository.saveAll(List.of(user1, user2, user3));

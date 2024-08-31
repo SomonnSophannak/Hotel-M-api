@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,8 +20,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
 
-    @Bean
+    /*@Bean
     InMemoryUserDetailsManager configureUserSecurity() {
         UserDetails admin = User
                 .withUsername("admin")
@@ -44,7 +46,14 @@ public class SecurityConfig {
         manager.createUser(subscriber);
 
         return manager;
+    }*/
 
+    @Bean
+    DaoAuthenticationProvider configDaoAuthenticationProvider() {
+        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+        auth.setUserDetailsService(userDetailsService);
+        auth.setPasswordEncoder(passwordEncoder);
+        return auth;
     }
 
     @Bean
@@ -52,6 +61,8 @@ public class SecurityConfig {
 
         // Endpoint security config
         http.authorizeHttpRequests(endpoint -> endpoint
+
+                .requestMatchers("/api/v1/auth/**").permitAll()
 
                 .requestMatchers(HttpMethod.POST,"/api/v1/rooms/**").hasAnyRole("USER")
                 .requestMatchers(HttpMethod.GET,"/api/v1/rooms/**").hasAnyRole("USER")

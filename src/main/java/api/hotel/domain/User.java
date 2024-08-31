@@ -22,20 +22,28 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String dateOfBirth;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(unique = true, nullable = false)
-    private String phone;
+    private String phoneNumber;
+
+    @Column(length = 30, nullable = false, unique = true)
+    private String email;
+
+    private Boolean isverified;
 
     // Relationships
     @OneToMany(mappedBy = "user")
     private List<Booking> bookings;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
