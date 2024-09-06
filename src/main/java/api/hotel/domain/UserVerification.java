@@ -1,11 +1,9 @@
 package api.hotel.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalTime;
 
 @Getter
@@ -20,12 +18,11 @@ public class UserVerification {
 
     private Long id;
 
-    private String verification;
+    private String verifiedCode;
 
     private LocalTime expiryTime;
 
     @OneToOne
     private User user;
-
 
 }

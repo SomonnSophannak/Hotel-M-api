@@ -18,10 +18,10 @@ public class Booking {
     private Integer id;
 
     @Column(nullable = false)
-    private Date checkinDate;
+    private Date checkInDate;
 
     @Column(nullable = false)
-    private Date checkoutDate;
+    private Date checkOutDate;
 
     // Relationships
     @ManyToOne

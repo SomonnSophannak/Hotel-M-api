@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalTime;
-import java.util.List;
 
 @Setter
 @Getter
@@ -29,9 +27,5 @@ public class Hotel {
 
     @Column(nullable = false)
     private String phone;
-
-    // Relationships
-    //@OneToMany(mappedBy = "hotel")
-    //private List<Room> rooms;
 
 }

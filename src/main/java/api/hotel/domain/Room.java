@@ -22,13 +22,7 @@ public class Room {
     @Column(nullable = false)
     private String status;
 
-    // Relationships
-    //@ManyToOne
-    //@JoinColumn(name = "hotelID")
-    //private Hotel hotel;
-
     @ManyToOne
-    //@JoinColumn(name = "typeID")
     private RoomType roomType;
 
 }

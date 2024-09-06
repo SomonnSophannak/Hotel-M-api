@@ -1,17 +1,21 @@
 package api.hotel.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -49,6 +53,12 @@ public class SecurityConfig {
     }*/
 
     @Bean
+    JwtAuthenticationProvider configJwtAuthenticationProvider(@Qualifier("refreshTokenJwtDecoder")JwtDecoder refreshTokenJwtDecoder) {
+        JwtAuthenticationProvider auth = new JwtAuthenticationProvider(refreshTokenJwtDecoder);
+        return auth;
+    }
+
+    @Bean
     DaoAuthenticationProvider configDaoAuthenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
         auth.setUserDetailsService(userDetailsService);
@@ -57,22 +67,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain configureApiSecurity(HttpSecurity http) throws Exception {
+    SecurityFilterChain configureApiSecurity(HttpSecurity http,
+                                             @Qualifier("accessTokenJwtDecoder") JwtDecoder jwtDecoder) throws Exception {
 
         // Endpoint security config
         http.authorizeHttpRequests(endpoint -> endpoint
 
                 .requestMatchers("/api/v1/auth/**").permitAll()
 
-                .requestMatchers(HttpMethod.POST,"/api/v1/rooms/**").hasAnyRole("USER")
-                .requestMatchers(HttpMethod.GET,"/api/v1/rooms/**").hasAnyRole("USER")
-                .requestMatchers(HttpMethod.PUT,"/api/v1/rooms/**").hasAnyRole("USER")
-                .requestMatchers(HttpMethod.PATCH,"/api/v1/rooms/**").hasAnyRole("USER")
-                .requestMatchers(HttpMethod.DELETE,"/api/v1/rooms/**").hasAnyRole("ADMIN")
+                //.requestMatchers(HttpMethod.POST,"/api/v1/rooms/**").hasAnyRole("USER")
+                //.requestMatchers(HttpMethod.GET,"/api/v1/rooms/**").hasAnyRole("USER")
+                //.requestMatchers(HttpMethod.PUT,"/api/v1/rooms/**").hasAnyRole("USER")
+                //.requestMatchers(HttpMethod.PATCH,"/api/v1/rooms/**").hasAnyRole("USER")
+                //.requestMatchers(HttpMethod.DELETE,"/api/v1/rooms/**").hasAnyRole("ADMIN")
 
                 .requestMatchers(HttpMethod.POST,"/api/v1/room-types/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/api/v1/room-types/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/api/v1/room-types/**").hasRole("USER")
+                .requestMatchers(HttpMethod.GET,"/api/v1/room-types/**").hasAuthority("SCOPE_USER")
                 .requestMatchers(HttpMethod.PUT,"/api/v1/room-types/**").hasAnyRole("MANAGER","ADMIN")
                 .requestMatchers(HttpMethod.PATCH,"/api/v1/room-types/**").hasAnyRole("MANAGER","ADMIN")
 
@@ -80,10 +91,14 @@ public class SecurityConfig {
 
         // Security Mechanism (http Basic Auth)
         // Http Basic Auth (Username and Password)
-        http.httpBasic(Customizer.withDefaults());
+        // http.httpBasic(Customizer.withDefaults());
+
+        // Security Mechanism (JWT)
+        http.oauth2ResourceServer(jwt -> jwt
+                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder)));
 
         // Disable CSRF Token
-        http.csrf(toke -> toke.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
 
         // Make API to Stateless Session
         http.sessionManagement(session -> session
